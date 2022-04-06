@@ -54,6 +54,7 @@ const ListeCours = () => {
   const [titre, setTitre] = useState('')
   const [description, setDescription] = useState('')
   const [objectif, setObjectif] = useState('')
+  const [file, setFile] = useState('')
   //coursInfo
   const [selectCoursId, setselectCoursId] = useState('')
   const [values, setValues] = useState({
@@ -66,11 +67,18 @@ const ListeCours = () => {
     etat: ',',
   })
 
-  function Notification_tailleDescription() {
+  function Notification_taille() {
     Swal.fire({
       icon: 'error',
-      title: 'Taille description',
-      text: 'La taille de la description doit être au minimum 50 caractères',
+      title: 'Taille minimum',
+      text: 'La taille de la description et du chams objectif doivent être au minimum 50 caractères',
+    })
+  }
+  function Notification_NonVide() {
+    Swal.fire({
+      icon: 'error',
+      title: 'Champs requis',
+      text: 'Tous les champs doivent être remplis',
     })
   }
   function Notification_Succees() {
@@ -104,10 +112,13 @@ const ListeCours = () => {
   }
   function handleSubmitMdf(event) {
     const form = event.currentTarget
-    if (form.checkValidity() === false || description.length < 50) {
-      if (description.length < 50 && description.length != 0) {
-        Notification_tailleDescription()
-      }
+    if (titre === '' || description === '' || objectif === '' || etat === '' || file === '') {
+      Notification_NonVide()
+      event.preventDefault()
+      event.stopPropagation()
+      setValidated(true)
+    } else if (description.length < 50 || objectif.length < 50) {
+      Notification_taille()
       event.preventDefault()
       event.stopPropagation()
       setValidated(true)
@@ -557,7 +568,16 @@ const ListeCours = () => {
                                 <CFormLabel htmlFor="formFileSm" style={{ fontWeight: 'bold' }}>
                                   Ajouter le cours en format pdf
                                 </CFormLabel>
-                                <CFormInput required type="file" size="sm" id="formFileSm" />
+                                <CFormInput
+                                  required
+                                  type="file"
+                                  size="sm"
+                                  id="formFileSm"
+                                  value={file}
+                                  onChange={(e) => {
+                                    setFile(e.target.value)
+                                  }}
+                                />
                                 <CFormFeedback invalid>Champs requis</CFormFeedback>
                               </CCol>
                               <CCol xs={12}>

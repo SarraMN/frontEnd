@@ -75,6 +75,13 @@ const ListeFormation = () => {
   function Notification_Succees() {
     Swal.fire('Succès!', 'La formation a été modifier avec succès', 'success')
   }
+  function Notification_NonVide() {
+    Swal.fire({
+      icon: 'error',
+      title: 'Champs requis',
+      text: 'Tous les champs doivent être remplis',
+    })
+  }
 
   function Notification_failure() {
     Swal.fire({
@@ -105,11 +112,13 @@ const ListeFormation = () => {
       .catch((e) => {})
   }
   function handleSubmitMdf(event) {
-    const form = event.currentTarget
-    if (form.checkValidity() === false || description.length < 50) {
-      if (description.length < 50 && description.length != 0) {
-        Notification_tailleDescription()
-      }
+    if (titre === '' || categorie === '' || description === '' || prix === '' || etat === '') {
+      Notification_NonVide()
+      event.preventDefault()
+      event.stopPropagation()
+      setValidated(true)
+    } else if (description.length < 50) {
+      Notification_tailleDescription()
       event.preventDefault()
       event.stopPropagation()
       setValidated(true)

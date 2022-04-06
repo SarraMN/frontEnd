@@ -22,6 +22,7 @@ const AjouterCours = (props) => {
   const [description, setDescription] = useState('')
   const [objectif, setObjectif] = useState('')
   const [etat, setEtat] = useState('Non archivé')
+  const [file, setFile] = useState('')
   const [values, setValues] = useState({
     titre: '',
     description: '',
@@ -38,11 +39,11 @@ const AjouterCours = (props) => {
     setValidated(false)
     setObjectif('')
   }
-  function Notification_tailleDescription() {
+  function Notification_taille() {
     Swal.fire({
       icon: 'error',
-      title: 'Taille description',
-      text: 'La taille de la description doit être au minimum 50 caractères',
+      title: 'Taille minimum',
+      text: 'La taille de la description et du chams objectif doivent être au minimum 50 caractères',
     })
   }
   function Notification_failure() {
@@ -55,14 +56,24 @@ const AjouterCours = (props) => {
   function Notification_Succees() {
     Swal.fire('Succès!', 'Le cours a été ajouter avec succès', 'success')
   }
+  function Notification_NonVide() {
+    Swal.fire({
+      icon: 'error',
+      title: 'Champs requis',
+      text: 'Tous les champs doivent être remplis',
+    })
+  }
   //props.id contient l'id de la formation
   const handleSubmit = (event) => {
     console.log('id formation', props.id)
-    const form = event.currentTarget
-    if (form.checkValidity() === false || description.length < 50) {
-      if (description.length < 50 && description.length != 0) {
-        Notification_tailleDescription()
-      }
+    console.log('file', file)
+    if (titre === '' || description === '' || objectif === '' || etat === '' || file === '') {
+      Notification_NonVide()
+      event.preventDefault()
+      event.stopPropagation()
+      setValidated(true)
+    } else if (description.length < 50 || objectif.length < 50) {
+      Notification_taille()
       event.preventDefault()
       event.stopPropagation()
       setValidated(true)
@@ -189,7 +200,17 @@ const AjouterCours = (props) => {
             <CFormLabel htmlFor="formFileSm" style={{ fontWeight: 'bold' }}>
               Ajouter le cours en format pdf
             </CFormLabel>
-            <CFormInput required type="file" size="sm" id="formFileSm" />
+            <CFormInput
+              required
+              type="file"
+              size="sm"
+              id="formFileSm"
+              value={file}
+              onChange={(e) => {
+                setFile(e.target.value)
+              }}
+              minLength="50"
+            />
             <CFormFeedback invalid>Champs requis</CFormFeedback>
           </CCol>
 

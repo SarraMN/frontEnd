@@ -51,6 +51,13 @@ const AjouterFormation = () => {
       text: 'La taille de la description doit être au minimum 50 caractères',
     })
   }
+  function Notification_NonVide() {
+    Swal.fire({
+      icon: 'error',
+      title: 'Champs requis',
+      text: 'Tous les champs doivent être remplis',
+    })
+  }
   function Notification_failure() {
     Swal.fire({
       icon: 'error',
@@ -77,11 +84,13 @@ const AjouterFormation = () => {
   }, [])
 
   const handleSubmit = (event) => {
-    const form = event.currentTarget
-    if (form.checkValidity() === false || description.length < 50) {
-      if (description.length < 50 && description.length != 0) {
-        Notification_tailleDescription()
-      }
+    if (titre === '' || categorie === '' || description === '' || prix === '' || etat === '') {
+      Notification_NonVide()
+      event.preventDefault()
+      event.stopPropagation()
+      setValidated(true)
+    } else if (description.length < 50) {
+      Notification_tailleDescription()
       event.preventDefault()
       event.stopPropagation()
       setValidated(true)
